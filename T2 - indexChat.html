@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!--RUTA RELATIVA DEL MÓDULO SOCKET.IO-->
+<!--POR REGLA GENERAL, AL ESCRIBIR LA PROPIEDAD SRC, BUSCARÁ DIRECTAMENTE
+	EN LA CARPETA DONDE SE COLOCAN TODOS LOS MÓDULOS AL INSTALARSE (TODOS
+	AQUELLOS QUE NO SEAN PROPIOS DE NODE.JS, COMO EXPRESS Ó SOCKET.IO EN 
+	ESTE CASO)-->
+<script src="/socket.io/socket.io.js"></script>
+
+
+<!--DEFINICIÓN DE FUNCIONES-->
+<script>
+
+	//CONECTAMOS EL SOCKET CON EL SERVIDOR
+	var socket = io.connect('http://localhost');
+	
+	//Al cargar la página, haremos uso de la función 'prompt' que nos muestra un cuadro
+	//de diálogo con la cadena pasada por parámetro. Así podemos pedir al usuario que
+	//nos diga su nombre y almacenarlo
+	var nombre = prompt('Nombre de usuario:');
+
+	//Una vez tengamos su nombre, debemos enviarlo al servidor para su procesamiento
+	//y posterior transmision al resto de usuarios
+	enviaUsuario(nombre);
+
+	function enviaUsuario(){
+		
+		socket.emit('nuevoUsuario', nombre);
+
+	}	
+
+
+	//Siempre que queramos enviar un mensaje al chat debemos notificarlo al servidor
+	//para que lo comunique a todas las conexiones establecidas
+	function envia(){
+		
+		//Para ello tenemos que coger el texto que tenemos en el bojeto input de 
+		//id='enviar' y utilizar su variable 'value'.
+		//Aparte, tenemos que formatear la cadena, añadiendo nuestro nombre al principio
+		//de modo que al ser mostrada, se pueda saber que frases pertenecen a cada usuario
+		socket.emit('recibe', nombre + ':' + document.getElementById('enviar').value);
+
+
+	}	
+	
+
+	//Si el servidor nos envia una cadena de texto, ya sea porque nosotros hayamos 
+	//actualizado el chat, o porque lo haya hecho otro usuario, con la funcion 
+	//'actualizaChat' añadimos la cadena que nos pasen por parámetro al texto
+	//que ya tengamos, mas un salto de carro
+	socket.on('actualizaChat',function(cadena){
+
+		document.getElementById('areaTexto').value += '\n'+cadena;
+
+	});
+
+	//Igual que con la función anterior, si nos llega una petición de actualización del 
+	//chat, debido a la conexion o desconexion de algún usuario, tenemos que actualizar
+	//la lista de los usuarios conectados a una versión mas reciente
+	socket.on('actualizaUsuarios',function(datos){
+
+		document.getElementById('nombresUsuarios').value = '\n'+datos;
+
+	});
+
+
+
+</script>
+</head>
+
+
+<!--//CUERPO DE LA PÁGINA WEB-->
+
+
+<body>
+
+	<div>
+
+		<h1 style="font-size:60px; text-align:center">Gumus presenta: Taller de Node.js</h1>
+		<h2 style="font-size:40px; text-align:center">Chat simple (Sesión 2)</h2>
+
+		<br><hr>
+
+	</div>
+
+	<div>
+
+		<textarea id="nombresUsuarios" disabled style="width:100px; height:200px; margin-left:20.5%"></textarea>
+
+		<textarea id="areaTexto" disabled style="width:400px; height:200px;"></textarea>
+
+	</div>
+
+	<div>
+
+		<input id="boton1" type='button' style="margin-left:20.5%;width:106px;3height:50px" value="Enviar" onclick='envia()'>
+
+		<input id="enviar" autofocus type='text' style="width:398px">
+
+		
+		
+
+	</div>
+
+
+
+</body>
+</html>

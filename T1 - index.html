@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<!--RUTA RELATIVA DEL MÓDULO SOCKET.IO-->
+<!--POR REGLA GENERAL, AL ESCRIBIR LA PROPIEDAD SRC, BUSCARÁ DIRECTAMENTE
+	EN LA CARPETA DONDE SE COLOCAN TODOS LOS MÓDULOS AL INSTALARSE (TODOS
+	AQUELLOS QUE NO SEAN PROPIOS DE NODE.JS, COMO EXPRESS Ó SOCKET.IO EN 
+	ESTE CASO)-->
+<script src="/socket.io/socket.io.js"></script>
+
+
+<!--DEFINICIÓN DE FUNCIONES-->
+<script>
+
+	//CONECTAMOS EL SOCKET CON EL SERVIDOR
+	var socket = io.connect('http://localhost');
+
+	//LAS LLAMADAS AL SERVIDOR Y LA CREACIÓN DE FUNCIONES EN EL CLIENTE
+	//ES IGUAL QUE EN EL SERVIDOR, DE MODO QUE UNA FUNCIÓN QUE MUESTRE
+	//UNA CADENA POR LA CONSOLA DEL NAVEGADOR SERÁ TAL QUE ASÍ:
+	socket.on('show',function(data){
+		console.log(data);
+	});
+
+	//(1)*************************************
+	
+	//CON ESTA FUNCIÓN LLAMAMOS A LA FUNCIÓN "MUESTRACADENA" DEL LADO DEL
+	//SERVIDOR PASANDO UNA CADENA COMO PARÁMETRO
+	function botonPulsado(){
+		socket.emit('muestraCadena', '----------------SE HA PULSADO EL BOTÓN----------------');
+	}
+	
+	//(1)*************************************
+
+</script>
+</head>
+
+
+<!--//CUERPO DE LA PÁGINA WEB-->
+
+
+<body>
+
+	<div>
+
+		<h1 style="font-size:60px; text-align:center">Gumus presenta: Taller de Node.js</h1>
+		<h2 style="font-size:40px; text-align:center">Página de pruebas (Sesión 1)</h2>
+
+		<br><hr>
+
+	</div>
+
+	<div>
+
+		<textarea id="areaTexto" style="width:400px; height:100px; margin-left:31%"></textarea>
+
+	</div>
+
+	<div>
+
+		<input id="boton1" type='button' style="margin-left:31%;width:200px;height:100px" value="Botón de prueba 1" >
+
+		<!--AÑADIMOS LA FUNCION ONCLICK AL BOTÓN-->
+		<input id="boton2" type='button' style="width:200px;height:100px" value="Boton de prueba 2" onclick='botonPulsado()'>
+
+	</div>
+
+
+
+</body>
+</html>
